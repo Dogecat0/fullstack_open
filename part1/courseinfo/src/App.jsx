@@ -1,34 +1,17 @@
-function Header({ course }) {
-  return (
-    <h1>{course.name}</h1>
-  )
-}
+const Header = ({ course }) => <h1>{course.name}</h1>
 
-function Part({ course }) {
-  return (
-    <>
-      {course.parts.map((part, index) => (
+const Part = ({ course }) => 
+  <>
+    {course.parts.map((part, index) => (
       <p key={index}>
         {part.name} {part.exercises}
       </p>
   ))}
-    </>
-  );
-}
+  </>
 
-function Content({ course }) {
-  return (
-    <>
-      <Part course={course} />
-    </>
-  )
-}
+const Content = ({ course }) => <><Part course={course} /></>
 
-function Total({ course }) {
-  return (
-    <p>Number of exercises {course.parts.reduce((sum, part) => sum + part.exercises, 0)}</p>
-  )
-}
+const Total = ({ course }) => <p>Number of exercises {course.parts.reduce((sum, part) => sum + part.exercises, 0)}</p>
 
 const App = () => {
   const course = {
