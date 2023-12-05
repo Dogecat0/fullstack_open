@@ -3,12 +3,16 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Person from './components/Person'
 import personService from './services/persons'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -40,9 +44,20 @@ const App = () => {
         personService
           .update(personExists.id, personObject)
           .then(returnedPerson => {
+            setSuccessMessage(`Updated ${personObject.name} successfully!`)
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
             setPersons(persons.map(person => person.id !== personExists.id ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
+          })
+          .catch(error => {
+            const message = error.response?.data?.error || `Error updating ${personObject.name}`;
+            setErrorMessage(message)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
       }
     } 
@@ -57,9 +72,20 @@ const App = () => {
       personService
         .create(personObject)
         .then(returnedPerson => {
+          setSuccessMessage(`Added ${personObject.name} successfully!`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+        })
+        .catch(error => {
+          const message = error.response?.data?.error || `Error adding ${personObject.name}`;
+          setErrorMessage(message)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -71,7 +97,18 @@ const App = () => {
       personService
         .del(id)
         .then(() => {
+          setSuccessMessage(`Deleted ${person.name} successfully!`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
           setPersons(persons.filter(person => person.id !== id))
+        })
+        .catch(error => {
+          const message = error.response?.data?.error || `Error deleting ${person.name}`;
+          setErrorMessage(message)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -93,6 +130,10 @@ const App = () => {
       
   return (
     <div>
+      <div>
+        <Notification message={successMessage} type="success"/>
+        <Notification message={errorMessage} type="error"/>
+      </div>
       <h2>Phonebook</h2>
       <Filter filter={filter} handleFilterChange={handleFilterChange}/>
       <h2>Add a new person</h2>
