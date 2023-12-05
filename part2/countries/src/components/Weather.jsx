@@ -29,13 +29,17 @@ const Weather = ({capital, capitalInfo}) => {
     }
     if (error) {
         return <div>Error loading weather data.</div>
-    }
+    } 
 
+    // convert kelvin to celsius and format to two decimal places
+    const celsius = (weather.current.temp - 273.15).toFixed(2)
+    const icon = `http://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png` // @2x means icon size
+    
     return (
         <div>
             <h2>Weather in {capital}</h2>
-            <p>temperature: {weather.current.temperature} Celsius</p>
-            <img src={weather.current.weather_icons} alt={capital} />
+            <p>temperature: {celsius} Celsius</p>
+            <img src={icon} alt={capital} />
             <p>wind: {weather.current.wind_speed} mph direction {weather.current.wind_dir}</p>
         </div>
     )
