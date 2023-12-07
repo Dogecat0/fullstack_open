@@ -26,19 +26,30 @@ const App = () => {
     ? countries.filter(country => country.name.common.toLowerCase().includes(search.toLowerCase()))
     : []
 
+  const renderContent = () => {
+    const isCountrySelected = selectedCountry !== null
+    const tooManyMatches = countriesToShow.length > 10
+    const singleCountryMatch = countriesToShow.length === 1
+
+    if (isCountrySelected) {
+      return <CountryDetail country={selectedCountry} />
+    } else if (tooManyMatches) {
+      return <p>Too many matches, specify another filter</p>
+    } else if (singleCountryMatch) {
+      return (
+        <CountryDetail country={countriesToShow[0]} />
+      )
+    } else {
+      return (
+        <CountryList countries={countriesToShow} handleShowClick={setSelectedCountry} />
+      )
+    }
+  }
+
   return (
     <div>
-      <Search search={search} handleSearchChange={handleSearchChange}/>
-      {selectedCountry 
-        ? <CountryDetail country={selectedCountry} />
-        : countriesToShow.length > 10
-          ? <p>Too many matches, specify another filter</p>
-          : countriesToShow.length > 1
-            ? <CountryList countries={countriesToShow} handleShowClick={setSelectedCountry} />
-            : countriesToShow.map(country => (
-              <CountryDetail key={country.name.common} country={country} />
-            ))
-      }
+      <Search search={search} handleSearchChange={handleSearchChange} />
+      {renderContent()}
     </div>
   )
 }
